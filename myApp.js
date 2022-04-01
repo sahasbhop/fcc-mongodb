@@ -1,17 +1,27 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const mongoUri = process.env.MONGO_URI;
-console.log(`mongoUri: ${mongoUri}`)
+const {Schema} = require("mongoose/lib/browser");
 
-mongoose.connect(mongoUri, {useNewUrlParser: true, useUnifiedTopology: true})
-    .then((result) => {
-        console.log('connected to mongodb successfully')
+const main = async () => {
+    await mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
+    console.log('[mongodb] connected successfully')
+}
+
+main()
+    .then(() => {
+        // ignore
     })
-    .catch((error) => {
-        console.log('failed to connect to mongodb')
+    .catch((err) => {
+        console.log(`[main] error ${err}`)
     })
 
-let Person;
+const personSchema = new Schema({
+    name: {type: String, required: true},
+    age: Number,
+    favoriteFoods: [String]
+})
+
+const Person = mongoose.model('Person', personSchema)
 
 const createAndSavePerson = (done) => {
     done(null /*, data*/);
